@@ -1,15 +1,30 @@
+from src.exceptions import (
+    ObjectNotFoundException,
+    ObjectAlreadyExistsException,
+    ReservationAlreadyExistsException,
+    ReservationNotFoundException,
+    TableNotFoundException,
+)
 from src.services.base import BaseService
 from src.schemas.reservation import Reservation, ReservationAdd
 
 
 class ReservationsService(BaseService):
     async def create_reservation(self, reservation_data: ReservationAdd) -> Reservation:
-        new_reservation = await self.db.reservations.create_reservation(reservation_data=reservation_data)
+        try:
+            new_reservation = await self.db.reservations.create_reservation(reservation_data=reservation_data)
+        except ObjectNotFoundException:
+            raise TableNotFoundException
+        except ObjectAlreadyExistsException:
+            raise ReservationAlreadyExistsException
         await self.db.commit()
         return new_reservation
     
     async def get_reservations(self) -> list[Reservation]:
-        return await self.db.reservations.get_all()
+        try:
+            return await self.db.reservations.get_all()
+        except ObjectNotFoundException:
+            raise ReservationNotFoundException
     
     async def delete_reservation(self, reservation_id: int) -> Reservation:
         deleted_reservation = await self.db.reservations.delete(id=reservation_id)

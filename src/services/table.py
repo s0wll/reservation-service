@@ -1,3 +1,9 @@
+from src.exceptions import (
+    KeyIsStillReferencedException,
+    ObjectNotFoundException,
+    TableKeyIsStillReferencedException,
+    TableNotFoundException,
+)
 from src.services.base import BaseService
 from src.schemas.table import Table, TableAdd
 
@@ -9,9 +15,15 @@ class TablesService(BaseService):
         return new_table
     
     async def get_tables(self) -> list[Table]:
-        return await self.db.tables.get_all()
+        try:
+            return await self.db.tables.get_all()
+        except ObjectNotFoundException:
+            raise TableNotFoundException
     
     async def delete_table(self, table_id: int) -> Table:
-        deleted_table = await self.db.tables.delete(id=table_id)
+        try:
+            deleted_table = await self.db.tables.delete(id=table_id)
+        except KeyIsStillReferencedException:
+            raise TableKeyIsStillReferencedException
         await self.db.commit()
         return deleted_table

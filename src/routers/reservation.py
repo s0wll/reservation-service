@@ -1,5 +1,14 @@
 from fastapi import APIRouter, Body
 
+from src.exceptions import (
+    ReservationAlreadyExistsException,
+    ReservationNotFoundException,
+    ReservationNotFoundHTTPException,
+    TableNotFoundException,
+    TableNotFoundHTTPException,
+    ReservationAlreadyExistsHTTPException,
+)
+from src.logger import logger
 from src.services.reservation import ReservationsService
 from src.routers.dependencies import DBDep
 from src.schemas.reservation import ReservationAdd
@@ -30,19 +39,36 @@ async def add_reservation(db: DBDep, reservation_data: ReservationAdd = Body(
         }
     )
 ):
-    new_reservation = await ReservationsService(db).create_reservation(
-        reservation_data=reservation_data
-    )
+    try:
+        logger.info("Добавление бронирования столика /add_reservation")
+        new_reservation = await ReservationsService(db).create_reservation(
+            reservation_data=reservation_data
+        )
+        logger.info("Успешное добавление бронирования")
+    except TableNotFoundException:
+        logger.error("Ошибка добавления бронирования: столик не найден")
+        raise TableNotFoundHTTPException
+    except ReservationAlreadyExistsException:
+        logger.error("Ошибка добавления бронирования: на данное время уже есть бронь")
+        raise ReservationAlreadyExistsHTTPException
     return {"status": "OK", "data": new_reservation}
 
 
 @router.get("")
 async def get_reservations(db: DBDep):
-    reservations = await ReservationsService(db).get_reservations()
+    try:
+        logger.info("Получение списка бронирований /get_reservations")
+        reservations = await ReservationsService(db).get_reservations()
+        logger.info("Успешное получение списка бронирований")
+    except ReservationNotFoundException:
+        logger.error("Ошибка получения списка бронирований: бронь не найдена")
+        raise ReservationNotFoundHTTPException
     return {"status": "OK", "data": reservations}
 
 
 @router.delete("/{id}")
 async def delete_reservation(db: DBDep, id: int):
+    logger.info("Удаление бронирования /delete_reservation")
     deleted_reservation = await ReservationsService(db).delete_reservation(reservation_id=id)
+    logger.info("Успешное удаление бронирования")
     return {"status": "OK", "data": deleted_reservation}
