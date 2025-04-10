@@ -1,0 +1,22 @@
+[
+    {
+        "name": "Table 1",
+        "seats": 2,
+        "location": "Общий зал"
+    },
+    {
+        "name": "Table 2",
+        "seats": 4,
+        "location": "Веранда"
+    },
+    {
+        "name": "Table 3",
+        "seats": 6,
+        "location": "Отдельная кабинка"
+    },
+    {
+        "name": "Table 4",
+        "seats": 8,
+        "location": "Терраса"
+    }
+]
