@@ -32,12 +32,14 @@ class ReservationsCRUD(BaseCRUD):
         for reservation in existing_reservations:
             existing_start = reservation.reservation_time
             existing_end = existing_start + timedelta(minutes=reservation.duration_minutes)
-            
+
             if (new_reserv_start < existing_end) and (new_reserv_end > existing_start):
                 raise ObjectAlreadyExistsException
 
         # Добавление бронирования, если нет пересечений по времени с уже существующими
-        new_reservation = insert(self.model).values(**reservation_data.model_dump()).returning(self.model)
+        new_reservation = (
+            insert(self.model).values(**reservation_data.model_dump()).returning(self.model)
+        )
         try:
             result = await self.session.execute(new_reservation)
         except IntegrityError as exc:

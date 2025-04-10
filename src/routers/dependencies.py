@@ -15,4 +15,4 @@ async def get_db() -> AsyncGenerator[DBManager, None]:
 DBDep = Annotated[DBManager, Depends(get_db)]
 
 
-# Также, здесь могли бы быть Dependencies для пагинации, авторизации и т.п. 
+# Также, здесь могли бы быть Dependencies для пагинации, авторизации и т.п.

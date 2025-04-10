@@ -18,14 +18,16 @@ router = APIRouter(prefix="/reservations", tags=["Бронирования"])
 
 
 @router.post("")
-async def add_reservation(db: DBDep, reservation_data: ReservationAdd = Body(
+async def add_reservation(
+    db: DBDep,
+    reservation_data: ReservationAdd = Body(
         openapi_examples={
             "1": {
                 "value": {
                     "customer_name": "Mark",
                     "table_id": 1,
                     "reservation_time": "2025-04-10T18:00",
-                    "duration_minutes": 120
+                    "duration_minutes": 120,
                 }
             },
             "2": {
@@ -33,11 +35,11 @@ async def add_reservation(db: DBDep, reservation_data: ReservationAdd = Body(
                     "customer_name": "Oleg",
                     "table_id": 2,
                     "reservation_time": "2025-04-10T12:30",
-                    "duration_minutes": 60
+                    "duration_minutes": 60,
                 }
-            }
+            },
         }
-    )
+    ),
 ):
     try:
         logger.info("Добавление бронирования столика /add_reservation")

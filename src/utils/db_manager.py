@@ -17,7 +17,7 @@ class DBManager:
         self.reservations = ReservationsCRUD(self.session)
 
         return self
-    
+
     # Происходит откат изменений и закрытие сессии, для избежания
     # утечек ресурсов и гарантирии, что сессия будет корректно завершена
     async def __aexit__(self, *args):

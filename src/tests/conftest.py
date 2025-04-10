@@ -33,9 +33,11 @@ async def create_test_data(setup_database):
         with open(file_path, encoding="utf-8") as file:
             data = json.load(file)
             return [schema.model_validate(item) for item in data]
-    
+
     tables = await load_and_validate_data("src/tests/test_data/mock_tables.json", TableAdd)
-    reservations = await load_and_validate_data("src/tests/test_data/mock_reservations.json", ReservationAdd)
+    reservations = await load_and_validate_data(
+        "src/tests/test_data/mock_reservations.json", ReservationAdd
+    )
 
     async with DBManager(session_factory=async_session_maker) as db:
         for table in tables:

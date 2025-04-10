@@ -64,4 +64,3 @@ class ReservationAlreadyExistsHTTPException(ReservationServiceHTTPException):
 class TableKeyIsStillReferencedHTTPException(ReservationServiceHTTPException):
     status_code = 409
     detail = "Ключ стола все еще используется в другой таблице"
-   

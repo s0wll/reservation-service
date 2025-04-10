@@ -6,6 +6,7 @@ from asyncpg.exceptions import ForeignKeyViolationError
 from src.exceptions import KeyIsStillReferencedException, ObjectNotFoundException
 from src.logger import logger
 
+
 class BaseCRUD:
     model = None
     schema: BaseModel = None
@@ -20,20 +21,19 @@ class BaseCRUD:
         # Валидация (приведение результата к pydantic модели) и возврат добавленной модели
         model = self.schema.model_validate(result.scalars().one(), from_attributes=True)
         return model
-    
+
     # Метод для получения всех данных из БД
     async def get_all(self) -> list[BaseModel]:
         query = select(self.model)
         result = await self.session.execute(query)
         models = [
-            self.schema.model_validate(one, from_attributes=True)
-            for one in result.scalars().all()
+            self.schema.model_validate(one, from_attributes=True) for one in result.scalars().all()
         ]
         if not models:
             logger.error("Ошибка получения данных из БД, данные не найдены")
             raise ObjectNotFoundException
         return models
-    
+
     # Здесь мог бы быть метод для изменения данных в БД (можно расширить функционал сервиса)
 
     # Метод для удаления данных из БД по фильтрам
@@ -42,9 +42,11 @@ class BaseCRUD:
         try:
             result = await self.session.execute(delete_stmt)
         except IntegrityError as exc:
-            #logger error(тип)
+            # logger error(тип)
             if isinstance(exc.orig.__cause__, ForeignKeyViolationError):
-                logger.error(f"Ошибка удаления данных из БД, тип ошибки: {type(exc.orig.__cause__)=}")
+                logger.error(
+                    f"Ошибка удаления данных из БД, тип ошибки: {type(exc.orig.__cause__)=}"
+                )
                 raise KeyIsStillReferencedException from exc
             else:
                 logger.error(

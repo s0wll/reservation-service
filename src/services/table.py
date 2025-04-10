@@ -13,13 +13,13 @@ class TablesService(BaseService):
         new_table = await self.db.tables.create(data=table_data)
         await self.db.commit()
         return new_table
-    
+
     async def get_tables(self) -> list[Table]:
         try:
             return await self.db.tables.get_all()
         except ObjectNotFoundException:
             raise TableNotFoundException
-    
+
     async def delete_table(self, table_id: int) -> Table:
         try:
             deleted_table = await self.db.tables.delete(id=table_id)
