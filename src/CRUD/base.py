@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from sqlalchemy import delete, insert, select
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, NoResultFound
 from asyncpg.exceptions import ForeignKeyViolationError
 
 from src.exceptions import KeyIsStillReferencedException, ObjectNotFoundException
@@ -51,5 +51,9 @@ class BaseCRUD:
                     f"Незнакомая ошибка, не удалось удалить данные из БД, тип ошибки: {type(exc.orig.__cause__)=}"
                 )
                 raise exc
-        model = self.schema.model_validate(result.scalars().one(), from_attributes=True)
+        try:
+            model = self.schema.model_validate(result.scalars().one(), from_attributes=True)
+        except NoResultFound as exc:
+            logger.error(f"Ошибка удаления данных из БД, тип ошибки: {type(exc)=}")
+            raise ObjectNotFoundException from exc
         return model

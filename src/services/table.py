@@ -25,5 +25,7 @@ class TablesService(BaseService):
             deleted_table = await self.db.tables.delete(id=table_id)
         except KeyIsStillReferencedException:
             raise TableKeyIsStillReferencedException
+        except ObjectNotFoundException:
+            raise TableNotFoundException
         await self.db.commit()
         return deleted_table

@@ -27,7 +27,10 @@ class ReservationsService(BaseService):
             raise ReservationNotFoundException
     
     async def delete_reservation(self, reservation_id: int) -> Reservation:
-        deleted_reservation = await self.db.reservations.delete(id=reservation_id)
+        try:
+            deleted_reservation = await self.db.reservations.delete(id=reservation_id)
+        except ObjectNotFoundException:
+            raise ReservationNotFoundException
         await self.db.commit()
         return deleted_reservation
     

@@ -68,7 +68,11 @@ async def get_reservations(db: DBDep):
 
 @router.delete("/{id}")
 async def delete_reservation(db: DBDep, id: int):
-    logger.info("Удаление бронирования /delete_reservation")
-    deleted_reservation = await ReservationsService(db).delete_reservation(reservation_id=id)
-    logger.info("Успешное удаление бронирования")
+    try:
+        logger.info("Удаление бронирования /delete_reservation")
+        deleted_reservation = await ReservationsService(db).delete_reservation(reservation_id=id)
+        logger.info("Успешное удаление бронирования")
+    except ReservationNotFoundException:
+        logger.error("Ошибка удаления бронирования: бронь не найдена")
+        raise ReservationNotFoundHTTPException
     return {"status": "OK", "data": deleted_reservation}

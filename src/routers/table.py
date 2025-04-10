@@ -44,4 +44,6 @@ async def delete_table(db: DBDep, id: int):
     except TableKeyIsStillReferencedException:
         logger.error("Ошибка удаления столика: ключ еще используется в другой таблице")
         raise TableKeyIsStillReferencedHTTPException
+    except TableNotFoundException:
+        raise TableNotFoundHTTPException
     return {"status": "OK", "data": deleted_table}
