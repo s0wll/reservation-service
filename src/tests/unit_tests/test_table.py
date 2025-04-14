@@ -27,12 +27,12 @@ async def test_delete_table(ac: AsyncClient):
     assert response.status_code == 200
     assert response.json()["data"]["id"] == 3
 
+
 @pytest.mark.asyncio
 async def test_delete_table_with_reservations(ac: AsyncClient):
     # Сначала создаем столик
     await ac.post(
-        "/tables",
-        json={"name": "Table for delete", "seats": 4, "location": "Near window"}
+        "/tables", json={"name": "Table for delete", "seats": 4, "location": "Near window"}
     )
 
     # Создаем бронь для этого столика
@@ -43,7 +43,7 @@ async def test_delete_table_with_reservations(ac: AsyncClient):
             "table_id": 1,
             "reservation_time": "2025-10-10T18:00",
             "duration_minutes": 120,
-        }
+        },
     )
 
     # Пытаемся удалить столик с активной броней
@@ -51,12 +51,13 @@ async def test_delete_table_with_reservations(ac: AsyncClient):
     assert response.status_code == 409
     assert "Ключ стола все еще используется в другой таблице" in response.json()["detail"]
 
+
 @pytest.mark.asyncio
 async def test_invalid_table_data(ac: AsyncClient):
     # Пытаемся создать столик с некорректными данными
     response = await ac.post(
         "/tables",
-        json={"name": 5, "seats": "InvInp", "location": 10}  # Все поля невалидны
+        json={"name": 5, "seats": "InvInp", "location": 10},  # Все поля невалидны
     )
     assert response.status_code == 422
     errors = response.json()["detail"]

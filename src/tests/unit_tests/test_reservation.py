@@ -20,17 +20,20 @@ async def test_add_reservation(ac: AsyncClient):
     assert result["data"]["reservation_time"] == "2025-10-10T18:00:00"
     assert result["data"]["duration_minutes"] == 120
 
+
 @pytest.mark.asyncio
 async def test_get_reservations(ac: AsyncClient):
     response = await ac.get("/reservations")
     assert response.status_code == 200
     assert response.json()["data"]
 
+
 @pytest.mark.asyncio
 async def test_delete_reservation(ac: AsyncClient):
     response = await ac.delete("/reservations/1")
     assert response.status_code == 200
     assert response.json()["data"]["id"] == 1
+
 
 @pytest.mark.asyncio
 async def test_conflict_reservation(ac: AsyncClient):
@@ -57,6 +60,7 @@ async def test_conflict_reservation(ac: AsyncClient):
     )
     assert response.status_code == 409
     assert response.json()["detail"] == "Стол уже забронирован на данное время"
+
 
 @pytest.mark.asyncio
 async def test_invalid_reservation_data(ac: AsyncClient):

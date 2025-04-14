@@ -23,7 +23,7 @@ class ReservationsService(BaseService):
             raise ReservationAlreadyExistsException
         except InvalidInputException:
             raise ZeroDurationMinutesException
- 
+
         await self.db.commit()
         return new_reservation
 
