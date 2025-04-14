@@ -9,18 +9,13 @@ ReservationServiceAPI - это REST API для бронирования стол
 - Хорошо структурированные эндпоинты API для легкого доступа к ресурсам
 - Тестирование для обеспечения надежности
 
-
 ## Установка
 
 1. Клонируйте репозиторий, находясь в директории, куда хотите скачать проект:
 ```bash
 git clone https://github.com/s0wll/reservation-service.git
 ```
-2. Перейдите в директорию проекта:
-```bash
-cd reservation-service
-```
-3. В корне проекта создайте файл .env и установите в нем следующие значения:
+2. В корне проекта создайте файл .env и установите в нем следующие значения:
 ```bash
 MODE=LOCAL
 
@@ -43,3 +38,62 @@ docker compose up --build
 API документация доступна по адресу: http://localhost:8001/docs
 
 ## Тестирование
+
+1. Для проведения тестирования, в корне проекта необходимо создать дополнительный файл .env-test и установить в нем следующие значения:
+```bash
+MODE=TEST
+
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=(ваше имя пользователя postgres)
+DB_PASS=(ваш пароль postgres)
+DB_NAME=reservation-service-test
+```
+
+2. Далее создайте дополнительную базу данных в PostgreSQL (локальное соединение) и назовите ее "reservation-service-test".
+
+3. Далее создайте и запустите виртуальное окружение с помощью команд (Я использовал в разработке версию Python 3.13.1):
+```bash
+python3 -m venv venv
+```
+
+Для MacOS/Linux:
+```bash
+source venv/bin/activate
+```
+Для Windows:
+```bash
+venv\Scripts\activate.bat
+```
+   
+Не забудьте выбрать правильное venv в вашем редакторе кода (В случае с VSCode - это "Recommended").
+
+4. Далее скачайте зависимости, выполнив команду:
+```bash
+pip install -r requirements.txt
+```
+
+5. После этого, для запуска тестирования, выполните следующую команду:
+```bash
+pytest -v -s
+```
+
+Если возникнут проблемы с переменными окружения, то выполните следующие команды, чтобы сбросить их значения:
+```bash
+unset MODE
+```
+```bash
+unset DB_HOST
+```
+```bash
+unset DB_PORT
+```
+```bash
+unset DB_USER
+```
+```bash
+unset DB_PASS
+```
+```bash
+unset DB_NAME
+```

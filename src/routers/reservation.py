@@ -7,6 +7,8 @@ from src.exceptions import (
     TableNotFoundException,
     TableNotFoundHTTPException,
     ReservationAlreadyExistsHTTPException,
+    ZeroDurationMinutesException,
+    ZeroDurationMinutesHTTPException,
 )
 from src.logger import logger
 from src.services.reservation import ReservationsService
@@ -53,6 +55,8 @@ async def add_reservation(
     except ReservationAlreadyExistsException:
         logger.error("Ошибка добавления бронирования: на данное время уже есть бронь")
         raise ReservationAlreadyExistsHTTPException
+    except ZeroDurationMinutesException:
+        raise ZeroDurationMinutesHTTPException
     return {"status": "OK", "data": new_reservation}
 
 

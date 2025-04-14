@@ -17,6 +17,14 @@ class ObjectAlreadyExistsException(ReservationServiceException):
     detail = "Объект уже существует"
 
 
+class InvalidInputException(ReservationServiceException):
+    detail = "Некорректные входные данные"
+
+
+class ZeroDurationMinutesException(InvalidInputException):
+    detail = "Продолжительность бронирования не может быть равна 0"
+
+
 class TableNotFoundException(ObjectNotFoundException):
     detail = "Стол не найден"
 
@@ -64,3 +72,8 @@ class ReservationAlreadyExistsHTTPException(ReservationServiceHTTPException):
 class TableKeyIsStillReferencedHTTPException(ReservationServiceHTTPException):
     status_code = 409
     detail = "Ключ стола все еще используется в другой таблице"
+
+
+class ZeroDurationMinutesHTTPException(ReservationServiceHTTPException):
+    status_code = 409
+    detail = "Продолжительность бронирования не может быть равна 0"

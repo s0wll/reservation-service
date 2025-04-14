@@ -1,9 +1,11 @@
 from src.exceptions import (
+    InvalidInputException,
     ObjectNotFoundException,
     ObjectAlreadyExistsException,
     ReservationAlreadyExistsException,
     ReservationNotFoundException,
     TableNotFoundException,
+    ZeroDurationMinutesException,
 )
 from src.services.base import BaseService
 from src.schemas.reservation import Reservation, ReservationAdd
@@ -19,6 +21,9 @@ class ReservationsService(BaseService):
             raise TableNotFoundException
         except ObjectAlreadyExistsException:
             raise ReservationAlreadyExistsException
+        except InvalidInputException:
+            raise ZeroDurationMinutesException
+ 
         await self.db.commit()
         return new_reservation
 

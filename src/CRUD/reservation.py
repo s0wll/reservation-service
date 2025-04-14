@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from asyncpg.exceptions import ForeignKeyViolationError
 
 
-from src.exceptions import ObjectNotFoundException, ObjectAlreadyExistsException
+from src.exceptions import InvalidInputException, ObjectNotFoundException, ObjectAlreadyExistsException
 from src.models.reservation import ReservationsORM
 from src.schemas.reservation import Reservation, ReservationAdd
 from src.CRUD.base import BaseCRUD
@@ -35,6 +35,10 @@ class ReservationsCRUD(BaseCRUD):
 
             if (new_reserv_start < existing_end) and (new_reserv_end > existing_start):
                 raise ObjectAlreadyExistsException
+            
+        # Исключение, если dur minutes = 0:
+        if reservation_data.duration_minutes == 0:
+            raise InvalidInputException
 
         # Добавление бронирования, если нет пересечений по времени с уже существующими
         new_reservation = (
